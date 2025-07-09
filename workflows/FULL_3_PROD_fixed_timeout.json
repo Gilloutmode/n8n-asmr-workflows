@@ -1,0 +1,276 @@
+{
+  "createdAt": "2025-07-09T12:38:20.394Z",
+  "updatedAt": "2025-07-09T13:44:14.981Z",
+  "id": "L7uGm8I9xgko1wTI",
+  "name": "FULL 3 PROD",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "f2ae933a-8d10-4125-9e37-93c8866c2817",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "87af0abd-c24c-4eb6-aa44-d136a008408a",
+      "name": "Manual Test",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "7a3031a0-68b5-494a-8852-c9865dd60002",
+      "name": "Merge Triggers",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        220,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1A7saFJS9IUd8rtlYbhipWnblr55brVwDmgPZHD9gWW4",
+          "mode": "list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "pending"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "id": "1f438590-4152-41b1-93ac-9f628db3a44c",
+      "name": "Get Pending Video",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        440,
+        200
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "QThik6pkSDGoqjj6",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ ($json.Mode || '').toString().trim().toLowerCase() }}",
+              "rightValue": "auto",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "90276235-d7dc-46b9-8b63-6fd2142d489c"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "533514de-1c91-4778-baf1-2c76e06bcf93",
+      "name": "Check Mode",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        660,
+        200
+      ]
+    },
+    {
+      "id": "split-trends-batch",
+      "name": "Split Trends Batch",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        1400,
+        200
+      ],
+      "parameters": {
+        "batchSize": 2,
+        "options": {}
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Create ONE unique ASMR scene based on this specific trend:\n\nTREND: {{ $json.trend_title || 'Unknown Trend' }}\nTECHNIQUE: {{ $json.trend_technique || 'Visual technique not specified' }}\nMATERIALS: {{ $json.trend_materials || 'Materials not specified' }}\nPLATFORM: {{ $json.trend_platform || 'Platform not specified' }}\nDETAILS: {{ $json.trend_details || 'Additional details not provided' }}\nUNIQUENESS SEED: {{ $json.uniqueness_seed || Math.floor(Math.random() * 1000000) }}\nTIMESTAMP: {{ $json.timestamp || new Date().toISOString() }}\n\nGenerate a single, unique ASMR scene that fully incorporates this trend's technique, materials, and visual elements. Make it cinematic and optimized for the specified platform.",
+        "options": {
+          "systemMessage": "You are an expert ASMR video scene creator. Generate ONE unique scene per trend. Keep responses concise. Output format: {\"scene\": {\"scene_number\": 1, \"type\": \"trend_type\", \"action\": \"action\", \"object\": \"object\", \"material\": \"material\"}, \"trend_source\": \"trend_title\"}",
+          "maxIterations": 2
+        }
+      },
+      "id": "e15b92e5-09fe-4b4a-a1f3-ffea98e7bc15",
+      "name": "Generate ASMR Scenes",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1540,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {
+          "responseFormat": "json_object",
+          "temperature": 0.7,
+          "timeout": 120000,
+          "frequencyPenalty": 1,
+          "presencePenalty": 0.8,
+          "topP": 0.95,
+          "maxTokens": 2000
+        }
+      },
+      "id": "82cda9b3-33f8-47c0-9dac-2294c074a10c",
+      "name": "OpenAI Chat Model 1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1620,
+        420
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "rN03lkUSMUTmFWoD",
+          "name": "New OpenAi connexion"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {
+          "responseFormat": "json_object",
+          "temperature": 0.7,
+          "timeout": 120000,
+          "frequencyPenalty": 1,
+          "presencePenalty": 0.8,
+          "topP": 0.95,
+          "maxTokens": 2000
+        }
+      },
+      "id": "89a14230-2b44-46b7-bd4c-939e491adec4",
+      "name": "OpenAI Chat Model 2",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2200,
+        420
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "rN03lkUSMUTmFWoD",
+          "name": "New OpenAi connexion"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Merge Auto/Manual": {
+      "main": [
+        [
+          {
+            "node": "Split Trends Batch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Trends Batch": {
+      "main": [
+        [
+          {
+            "node": "Generate ASMR Scenes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model 1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate ASMR Scenes",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model 2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Prompts",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": null,
+  "pinData": {},
+  "versionId": "bd6fb7d6-6aba-49de-9cbc-bf352a9d7016",
+  "triggerCount": 0
+}
