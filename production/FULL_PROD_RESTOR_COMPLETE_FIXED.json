@@ -1,0 +1,110 @@
+{
+  "id": "SfGrj5K7So9ugX5V",
+  "name": "FULL PROD RESTOR",
+  "active": false,
+  "isArchived": false,
+  "createdAt": "2025-07-09T11:52:38.071Z",
+  "updatedAt": "2025-07-09T11:53:32.249Z",
+  "versionId": "f628c67c-5d39-42a3-bffe-cf327f832a22",
+  "BACKUP_INFO": {
+    "backup_date": "2025-07-09T11:54:00Z",
+    "original_workflow_id": "SfGrj5K7So9ugX5V",
+    "fixes_applied": [
+      "✅ Perplexity unique search with timestamp and random seed",
+      "✅ FAL AI switched to Seedance Lite (1:1, 720p, 10s)",
+      "✅ Row number validation (force >= 2, never 1)",
+      "✅ Simplified video generation with direct URL extraction",
+      "✅ Production environment configuration",
+      "✅ All recent improvements applied"
+    ],
+    "google_sheets_id": "1A7saFJS9IUd8rtlYbhipWnblr55brVwDmgPZHD9gWW4",
+    "mode": "production",
+    "fal_config": {
+      "model": "seedance-lite",
+      "aspect_ratio": "1:1",
+      "resolution": "720p",
+      "duration": "10s",
+      "url": "https://queue.fal.run/fal-ai/bytedance/seedance/v1/lite/text-to-video"
+    },
+    "perplexity_config": {
+      "unique_search": true,
+      "identifier_format": "{{ new Date().toISOString() }}-{{ Math.floor(Math.random() * 1000000) }}",
+      "timestamp": "{{ new Date().toISOString() }}",
+      "random_seed": "{{ Math.floor(Math.random() * 1000000) }}"
+    }
+  },
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "938ad897-0bd9-4396-9a7c-1241d0386d92",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {},
+      "id": "029c63b1-9fd8-4873-87ad-3f3f9d409d34",
+      "name": "Manual Test",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 200]
+    },
+    {
+      "parameters": {
+        "model": "sonar-pro",
+        "messages": {
+          "message[0]": {
+            "content": "Find the most viral ASMR video trends from the last 48 hours. Focus on:\n1. Specific techniques (tapping, scratching, whispering, etc.)\n2. Objects and materials being used\n3. New creative combinations\n4. Emerging sounds and triggers\n\nIMPORTANT: Generate UNIQUE trends each time - avoid repeating previous analyses.\n\nUNIQUE SEARCH IDENTIFIER: {{ new Date().toISOString() }}-{{ Math.floor(Math.random() * 1000000) }}\nTIMESTAMP: {{ new Date().toISOString() }}\nRANDOM_SEED: {{ Math.floor(Math.random() * 1000000) }}\n\nSearch for completely fresh content with this unique identifier. Provide a structured analysis with specific examples that are different from any previous search."
+          }
+        }
+      },
+      "id": "9bb5a7e2-3b2e-4b32-9956-0f8c9bbe18d0",
+      "name": "Get ASMR Trends",
+      "type": "n8n-nodes-base.perplexity",
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://queue.fal.run/fal-ai/bytedance/seedance/v1/lite/text-to-video",
+        "jsonBody": "={{ JSON.stringify({ prompt: $json.prompt, aspect_ratio: '1:1', resolution: '720p', duration: '10' }) }}"
+      },
+      "id": "5d7dc9e7-a6cf-413d-bd62-fd09dcd06f4e",
+      "name": "Generate Video (FAL)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Merge Triggers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "triggerCount": 0
+}
