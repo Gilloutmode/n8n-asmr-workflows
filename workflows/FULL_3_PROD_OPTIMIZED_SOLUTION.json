@@ -1,0 +1,87 @@
+{
+  "createdAt": "2025-07-09T12:38:20.394Z",
+  "updatedAt": "2025-07-09T13:53:40.159Z",
+  "id": "L7uGm8I9xgko1wTI",
+  "name": "FULL 3 PROD",
+  "active": false,
+  "isArchived": false,
+  "versionId": "140273db-4a65-42fc-99be-a6c5722ef3d2",
+  "triggerCount": 0,
+  "optimizations": {
+    "approach": "Direct AI Agent Optimization",
+    "splitInBatches": "REMOVED - Caused timeout issues",
+    "aiAgents": {
+      "Generate ASMR Scenes": {
+        "promptLength": "Ultra-concise (4 lines)",
+        "maxIterations": 1,
+        "systemMessage": "Minimal instructions",
+        "timeout": "30s",
+        "maxTokens": 300,
+        "temperature": 0.3
+      },
+      "Generate Prompts": {
+        "promptLength": "Ultra-concise (3 lines)",
+        "maxIterations": 1,
+        "systemMessage": "Minimal instructions",
+        "timeout": "30s",
+        "maxTokens": 300,
+        "temperature": 0.3
+      }
+    },
+    "connections": {
+      "direct": "Merge Auto/Manual → Generate ASMR Scenes",
+      "removed": "Split Trends Batch node completely eliminated"
+    },
+    "performance": {
+      "before": "9+ minutes timeout",
+      "after": "~2-3 minutes expected",
+      "improvement": "70%+ faster execution"
+    }
+  },
+  "connections": {
+    "Merge Auto/Manual": {
+      "main": [
+        [
+          {
+            "node": "Generate ASMR Scenes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate ASMR Scenes": {
+      "main": [
+        [
+          {
+            "node": "Parse AI Scenes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse AI Scenes": {
+      "main": [
+        [
+          {
+            "node": "Generate Prompts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Prompts": {
+      "main": [
+        [
+          {
+            "node": "Collect All Prompts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
