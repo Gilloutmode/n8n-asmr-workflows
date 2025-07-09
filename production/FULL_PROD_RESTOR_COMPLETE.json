@@ -1,0 +1,131 @@
+{
+  "id": "PYah5PXnV8cewWD1",
+  "name": "FULL PROD RESTOR",
+  "active": false,
+  "isArchived": false,
+  "createdAt": "2025-07-09T10:15:43.130Z",
+  "updatedAt": "2025-07-09T11:43:48.865Z",
+  "versionId": "429b881a-0704-44b7-85a7-76a0f045dc2f",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "c2784cdf-9762-4587-9d07-fc030ad4edaf",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {},
+      "id": "e4859063-9d6d-429b-9046-2c620ef0c687",
+      "name": "Manual Test",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 200]
+    },
+    {
+      "parameters": {},
+      "id": "c9293d7f-e14c-438a-910e-2bd62c532b46",
+      "name": "Merge Triggers",
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [220, 100]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1A7saFJS9IUd8rtlYbhipWnblr55brVwDmgPZHD9gWW4",
+          "mode": "list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "pending"
+            }
+          ]
+        },
+        "options": {
+          "returnFirstMatch": true
+        }
+      },
+      "id": "922bc72a-0837-4b71-ad58-f422841b4ac3",
+      "name": "Get Pending Video",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [440, 200],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "QThik6pkSDGoqjj6",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Merge Triggers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Test": {
+      "main": [
+        [
+          {
+            "node": "Merge Triggers",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "pinData": {},
+  "triggerCount": 0,
+  "BACKUP_INFO": {
+    "backup_date": "2025-07-09T11:48:00Z",
+    "original_workflow_id": "PYah5PXnV8cewWD1",
+    "fixes_applied": [
+      "Perplexity unique search with timestamp and random seed",
+      "FAL AI wait system with polling and retry logic",
+      "Enhanced error handling and fallback prompts",
+      "Row number validation for Google Sheets"
+    ],
+    "google_sheets_id": "1A7saFJS9IUd8rtlYbhipWnblr55brVwDmgPZHD9gWW4",
+    "mode": "production",
+    "fal_config": {
+      "model": "seedance-lite",
+      "aspect_ratio": "1:1",
+      "resolution": "720p",
+      "duration": "10s"
+    }
+  }
+}
